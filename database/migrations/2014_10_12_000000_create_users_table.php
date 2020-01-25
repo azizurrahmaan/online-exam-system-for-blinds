@@ -19,6 +19,10 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            /**
+             * role =  Admin | Blind Student | Non-blind Student
+             */
+            $table->string('role')->default("Administrator");
             $table->rememberToken();
             $table->timestamps();
         });
