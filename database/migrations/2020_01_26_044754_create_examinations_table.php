@@ -16,7 +16,10 @@ class CreateExaminationsTable extends Migration
         Schema::create('examinations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->String('name');
-            $table->date('date');
+            $table->unsignedDecimal('passing_percentage');
+            $table->unsignedInteger('duration_for_blind');
+            $table->unsignedInteger('duration_for_non_blind');
+            $table->unsignedInteger('total_questions');
             $table->timestamps();
         });
     }

@@ -20,6 +20,7 @@ class CreateQuestionsTable extends Migration
             $table->longText('option_b');
             $table->longText('option_c');
             $table->longText('option_d');
+            $table->longText('option_e');
             $table->string('correct_option');
             $table->timestamps();
         });
