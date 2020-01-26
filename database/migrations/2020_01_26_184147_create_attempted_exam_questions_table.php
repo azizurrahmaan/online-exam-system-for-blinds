@@ -23,6 +23,8 @@ class CreateAttemptedExamQuestionsTable extends Migration
             $table->string('correct_option');
             $table->timestamps();
         });
+        
+        DB::statement("ALTER TABLE `results` ADD UNIQUE `student_exam_result_unique`(`student_id`, `exam_question_id`);");
     }
 
     /**
