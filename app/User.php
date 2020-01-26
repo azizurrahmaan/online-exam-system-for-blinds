@@ -36,4 +36,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function scopeGetWhere($query, $column_name, $relation,$column_value)
+    {
+        $result = $this->select('*')->where($column_name,$relation,$column_value)->get();
+        return $result;
+    }
 }

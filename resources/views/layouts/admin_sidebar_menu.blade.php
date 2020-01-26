@@ -10,13 +10,24 @@
         </p>
       </a>
     </li>
+
     <li class="nav-item ">
       <a href="/students" class="nav-link {{(url()->current() == route("students"))?'active':''}}">
-        <i class="nav-icon fas fa-users"></i>
+        <i class="nav-icon fas fa-user-graduate"></i>
         <p>
           Students
         </p>
       </a>
     </li>
+
+    <li class="nav-item ">
+      <a href="/administrators" class="nav-link {{(url()->current() == route("administrators"))?'active':''}}">
+        <i class="nav-icon fas fa-users"></i>
+        <p>
+          Administrators
+        </p>
+      </a>
+    </li>
+
   </ul>
 </nav>

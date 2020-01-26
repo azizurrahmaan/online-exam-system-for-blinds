@@ -2,6 +2,6 @@
 
 return [
 
-    'Role' => 'Role',
+    'Role' => 'Role/Type',
 
 ];

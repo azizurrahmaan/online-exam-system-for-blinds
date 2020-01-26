@@ -13,4 +13,8 @@
 Auth::routes(['confirm' => false, 'email' => false, 'request' => false, 'update' => false, 'reset' => false]);
 
 Route::get('/', 'HomeController@index')->name('home');
-Route::get('/students', 'StudentsController@index')->name('students');
+Route::get('/students', 'Auth\RegisterController@showRegistrationForm')->name('students');
+Route::get('students/{user}', 'StudentsController@edit')->name('students.edit');
+Route::patch('students/{user}/update', 'StudentsController@update')->name('students.update');
+Route::delete('students/{user}', 'StudentsController@destroy')->name('students.delete');
+Route::get('/administrators', 'Auth\RegisterController@showRegistrationForm')->name('administrators');
