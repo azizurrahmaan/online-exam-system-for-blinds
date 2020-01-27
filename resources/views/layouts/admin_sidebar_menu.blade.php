@@ -38,5 +38,23 @@
       </a>
     </li>
 
+    <li class="nav-item has-treeview {{(url()->current() == route("examinations.create"))?'menu-open':''}}">
+      <a href="#" class="nav-link">
+        <i class="fas fa-file-alt"></i>
+        <p>
+          Examinations
+          <i class="fas fa-angle-left right"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="/examinations/create" class="nav-link {{(url()->current() == route("examinations.create"))?'active':''}}">
+            <i class="fa fa-plus nav-icon"></i>
+            <p>Create</p>
+          </a>
+        </li>
+      </ul>
+    </li>
+
   </ul>
 </nav>

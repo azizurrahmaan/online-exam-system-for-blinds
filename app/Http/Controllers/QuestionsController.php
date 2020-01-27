@@ -56,9 +56,17 @@ class QuestionsController extends Controller
         ]);
         
         $question = request()->except('_token');
-        \App\Question::SaveQuestion($question);
+        $question_id = \App\Question::SaveQuestion($question);
+        if($request->url() == route('questions')){
+            $exam = \App\Examination::findOrFail(request('examination'));
+            \App\ExamQuestion::SaveExamQuestion($exam,$question_id);
+            $exam->total_questions_added = $exam->total_questions_added + 1;
+            $exam->save();
+            return redirect()->route('examinations.add_question',['examination'=> $exam]);
+        }else{
+            return redirect('/questions');
+        }
 
-        return redirect('/questions');
     }
 
     /**

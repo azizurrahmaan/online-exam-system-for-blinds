@@ -20,6 +20,7 @@ class CreateExaminationsTable extends Migration
             $table->unsignedInteger('duration_for_blind');
             $table->unsignedInteger('duration_for_non_blind');
             $table->unsignedInteger('total_questions');
+            $table->unsignedInteger('total_questions_added')->default(0);
             $table->timestamps();
         });
     }

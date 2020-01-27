@@ -22,6 +22,7 @@ class Question extends Model
             $q->option_e = $question['option_e'];
         $q->correct_option = $question['correct_option'];
         $q->save();
+        return $q->id;
     }
 
     public function scopeUpdateQuestion($query, $q, $u_question)

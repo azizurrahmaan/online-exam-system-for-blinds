@@ -13,6 +13,7 @@
 Auth::routes(['confirm' => false, 'email' => false, 'request' => false, 'update' => false, 'reset' => false]);
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/students', 'Auth\RegisterController@showRegistrationForm')->name('students');
 Route::get('students/{user}', 'StudentsController@edit')->name('students.edit');
 Route::patch('students/{user}/update', 'StudentsController@update')->name('students.update');
@@ -28,3 +29,17 @@ Route::resource('/questions', 'QuestionsController',[
         'update' => 'question.update',
     ]
 ]);
+
+Route::resource('/examinations', 'ExaminationsController',[
+    'names' => [
+        'create' => 'examinations.create',
+        'store' => 'examination.save',
+        'edit' => 'examination.edit',
+        'destroy' => 'examination.delete',
+        'update' => 'examination.update',
+        'show' => 'examinations.view',
+    ]
+]);
+
+Route::get('/examinations/{examination}/add_questions', 'ExaminationsController@addQuestions')->name('examinations.add_question');
+Route::post('/examinations/{examination}/save_questions', 'ExaminationsController@saveQuestions')->name('examinations.save_questions');
