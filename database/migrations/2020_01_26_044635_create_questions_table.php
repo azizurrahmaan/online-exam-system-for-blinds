@@ -15,6 +15,7 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('subject');
             $table->longText('question_text');
             $table->longText('option_a');
             $table->longText('option_b');
