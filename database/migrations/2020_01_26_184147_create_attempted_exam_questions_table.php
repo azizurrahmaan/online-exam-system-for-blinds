@@ -24,7 +24,7 @@ class CreateAttemptedExamQuestionsTable extends Migration
             $table->timestamps();
         });
         
-        DB::statement("ALTER TABLE `results` ADD UNIQUE `student_exam_result_unique`(`student_id`, `exam_question_id`);");
+        DB::statement("ALTER TABLE `attempted_exam_questions` ADD UNIQUE `student_attempted_exam_questions_unique`(`student_id`, `exam_question_id`);");
     }
 
     /**
