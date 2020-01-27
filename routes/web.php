@@ -18,3 +18,13 @@ Route::get('students/{user}', 'StudentsController@edit')->name('students.edit');
 Route::patch('students/{user}/update', 'StudentsController@update')->name('students.update');
 Route::delete('students/{user}', 'StudentsController@destroy')->name('students.delete');
 Route::get('/administrators', 'Auth\RegisterController@showRegistrationForm')->name('administrators');
+
+Route::resource('/questions', 'QuestionsController',[
+    'names' => [
+        'index' => 'questions',
+        'store' => 'question.save',
+        'edit' => 'question.edit',
+        'destroy' => 'question.delete',
+        'update' => 'question.update',
+    ]
+]);

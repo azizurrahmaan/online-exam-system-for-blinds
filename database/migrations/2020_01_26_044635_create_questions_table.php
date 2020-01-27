@@ -19,9 +19,9 @@ class CreateQuestionsTable extends Migration
             $table->longText('question_text');
             $table->longText('option_a');
             $table->longText('option_b');
-            $table->longText('option_c');
-            $table->longText('option_d');
-            $table->longText('option_e');
+            $table->longText('option_c')->nullable();
+            $table->longText('option_d')->nullable();
+            $table->longText('option_e')->nullable();
             $table->string('correct_option');
             $table->timestamps();
         });

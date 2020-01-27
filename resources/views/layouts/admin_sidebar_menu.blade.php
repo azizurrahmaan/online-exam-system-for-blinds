@@ -29,5 +29,14 @@
       </a>
     </li>
 
+    <li class="nav-item ">
+      <a href="/questions" class="nav-link {{(url()->current() == route("questions"))?'active':''}}">
+        <i class="fas fa-scroll"></i>
+        <p>
+          Question Pool
+        </p>
+      </a>
+    </li>
+
   </ul>
 </nav>
