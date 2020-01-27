@@ -38,7 +38,7 @@
       </a>
     </li>
 
-    <li class="nav-item has-treeview {{(url()->current() == route("examinations.create"))?'menu-open':''}}">
+    <li class="nav-item has-treeview {{(url()->current() == route("examinations.create") || url()->current() == route("examinations"))?'menu-open':''}}">
       <a href="#" class="nav-link">
         <i class="fas fa-file-alt"></i>
         <p>
@@ -51,6 +51,12 @@
           <a href="/examinations/create" class="nav-link {{(url()->current() == route("examinations.create"))?'active':''}}">
             <i class="fa fa-plus nav-icon"></i>
             <p>Create</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/examinations" class="nav-link {{(url()->current() == route("examinations"))?'active':''}}">
+            <i class="fa fa-eye nav-icon"></i>
+            <p>View All</p>
           </a>
         </li>
       </ul>

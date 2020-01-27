@@ -74,7 +74,7 @@
             </div>
         </div>
     </div>
-    
+
     @if($examination['total_questions']!=$included_questions_count)
     <div class="row">
         <div class="col-md-12">
@@ -240,22 +240,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            @if (session('question_count_exceed_error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('question_count_exceed_error') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-            @endif
-            @if (session('questions_added_success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('questions_added_success') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-            @endif
+           
             <form id="save_selected_question_in_exam_form" action="{{ route('examinations.save_questions', ['examination' => $examination]) }}" method="POST">
             @csrf
                 <div class="card collapsed-card">

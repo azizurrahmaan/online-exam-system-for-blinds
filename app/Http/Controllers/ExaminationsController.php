@@ -24,7 +24,10 @@ class ExaminationsController extends Controller
      */
     public function index()
     {
-        return redirect()->route('examinations.create');
+        $examinations = \App\Examination::all();
+        return view('examinations.view_all',[
+            'examinations' => $examinations
+        ]);
     }
 
     /**
@@ -59,7 +62,7 @@ class ExaminationsController extends Controller
         $examination = request()->except('_token');
         $examination['duration_for_blind'] = $examination['duration_for_non_blind'] + 30;
         \App\Examination::SaveExamination($examination);
-        return redirect('/examinations');
+        return redirect('/examinations')->with("add_new_qustion_in_exam_success", "New Question was added successfuly in Exam and Pool.");
     }
 
     /**
@@ -157,9 +160,9 @@ class ExaminationsController extends Controller
             $examination->total_questions_added = $addded_questions_count + $to_be_added_questions_count;
             $examination->save();
             if($addded_questions_count + $to_be_added_questions_count == $examination->total_questions){
-                return redirect()->route('examinations.view', ['examination'=> $examination])->with('questions_added_success', 'Question(s) Where Successfuly Added in Exam.');
+                return redirect()->route('examinations.view', ['examination'=> $examination])->with('questions_added_success', 'Selected Question(s) from pool Were Successfuly Added in Exam.');
             }else{
-                return redirect()->route('examinations.add_question', ['examination'=> $examination])->with('questions_added_success', 'Question(s) Where Successfuly Added in Exam.');
+                return redirect()->route('examinations.add_question', ['examination'=> $examination])->with('questions_added_success', 'Selected Question(s) from pool Were Successfuly Added in Exam.');
             }
         }
     }

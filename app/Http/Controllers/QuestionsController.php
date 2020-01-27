@@ -57,14 +57,14 @@ class QuestionsController extends Controller
         
         $question = request()->except('_token');
         $question_id = \App\Question::SaveQuestion($question);
-        if($request->url() == route('questions')){
+        if(request('examination')){
             $exam = \App\Examination::findOrFail(request('examination'));
             \App\ExamQuestion::SaveExamQuestion($exam,$question_id);
             $exam->total_questions_added = $exam->total_questions_added + 1;
             $exam->save();
-            return redirect()->route('examinations.add_question',['examination'=> $exam]);
+            return redirect()->route('examinations.add_question',['examination'=> $exam])->with("add_new_qustion_in_exam_success", "New Question was added successfuly in Exam and Pool.");;
         }else{
-            return redirect('/questions');
+            return redirect('/questions')->with("add_new_qustion_in_pool", "New Question was added successfuly in Pool.");;
         }
 
     }
@@ -116,7 +116,7 @@ class QuestionsController extends Controller
         $u_question = request()->except('_token', '_method');
         \App\Question::UpdateQuestion($question, $u_question);
 
-        return back();  
+        return back()->with('question_update_success', 'Question updated successfuly!');
     }
 
     /**
@@ -127,7 +127,7 @@ class QuestionsController extends Controller
      */
     public function destroy(Question $question)
     {
-        $question->forceDelete();
-        return back();
+        // $question->forceDelete();
+        // return back()->with('question_delete_success', 'Question deleted successfuly!');;
     }
 }

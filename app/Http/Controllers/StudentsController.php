@@ -64,7 +64,7 @@ class StudentsController extends Controller
 
         $user->save();
 
-        return back();
+        return back()->with('student_update_success', 'Student updated successfuly!');
     }
 
      /**
@@ -77,7 +77,7 @@ class StudentsController extends Controller
     {
         $user = \App\User::findorFail($id);
         $user->forceDelete();
-        return back();
+        return back()->with('student_delete_success', 'Student deleted successfuly!');
     }
 
 

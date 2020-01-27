@@ -198,20 +198,20 @@
                             @foreach($questions as $question)
                             <tr>
                                 <td>
-                                    <div class="card mb-0">
+                                    <div class="card mb-0 collapsed-card">
                                         <div class="card-header">
                                             <div class="card-title">
                                                 <label>{{++$i}}. Title: </label> {{$question['subject']}}
                                             </div>
                                             <div class="card-tools">
-                                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
                                                 <a class="right badge badge-primary" href="{{ route('question.edit',['question'=>$question]) }}"><i class="fas fa-edit"></i> Edit</a>
-                                                <a class="right badge badge-danger" href="#" style="margin-right:5px;" data-toggle="modal" data-id="{{$question['id']}}" data-title="{{$question['subject']}}" data-question-text="{{$question['question_text']}}" data-target="#modal-danger"><i class="fas fa-trash-alt"></i> Delete</a>
+                                                {{-- <a class="right badge badge-danger" href="#" style="margin-right:5px;" data-toggle="modal" data-id="{{$question['id']}}" data-title="{{$question['subject']}}" data-question-text="{{$question['question_text']}}" data-target="#modal-danger"><i class="fas fa-trash-alt"></i> Delete</a>
                                                 <form action="{{route('question.delete', ['question' => $question])}}" id="form-{{$question['id']}}" method="POST" hidden>
                                                     {{method_field('DELETE')}}
                                                     @csrf
                                                     <input type="submit" class="right badge badge-danger" value="Delete"/>
-                                                </form>
+                                                </form> --}}
                                             </div>
                                         </div>
                                         <div class="card-body">
@@ -298,7 +298,7 @@
 <script>
     $(function () {
       $('#questions_table').DataTable({
-        "paging": true,
+        "paging": false,
         "lengthChange": false,
         "searching": true,
         "ordering": true,
@@ -347,6 +347,7 @@
           }
       })
       $("[data-target='#modal-danger']").on('click', function(){
+            console.log($(this))
           let title = $(this).data('title');
           let question_text = $(this).data('question-text');
           let id = $(this).data('id');

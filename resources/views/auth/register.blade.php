@@ -196,6 +196,7 @@ Register {{(url()->current() == route("students"))?'Students':'Administrators'}}
           <p>Name:<b> <span id="name-span"></span></b> </p>
           <p>Email:<b> <span id="email-span"></span></b> </p>
           <p>Type:<b> <span id="role-span"></span></b> </p>
+          <p>All the data(results etc) related to this student will also be deleted!</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>

@@ -32,6 +32,7 @@ Route::resource('/questions', 'QuestionsController',[
 
 Route::resource('/examinations', 'ExaminationsController',[
     'names' => [
+        'index' => 'examinations',
         'create' => 'examinations.create',
         'store' => 'examination.save',
         'edit' => 'examination.edit',

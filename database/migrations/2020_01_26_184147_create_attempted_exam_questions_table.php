@@ -19,8 +19,8 @@ class CreateAttemptedExamQuestionsTable extends Migration
             $table->unsignedBigInteger('exam_question_id');
             $table->foreign('exam_question_id')->references('id')->on('exam_questions');
             $table->unsignedBigInteger('student_id');
-            $table->foreign('student_id')->references('id')->on('users');
-            $table->string('correct_option');
+            $table->foreign('student_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('choosed_option');
             $table->timestamps();
         });
         
