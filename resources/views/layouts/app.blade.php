@@ -21,7 +21,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   @yield("styles")
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini {{(isset($examination) && $examination && url()->current() == route("students.do_attempt_examination",['examination'=>$examination]))?'sidebar-collapse':''}}">
 <div class="wrapper">
   <!-- Navbar -->
   @include('layouts.top_nav_bar')

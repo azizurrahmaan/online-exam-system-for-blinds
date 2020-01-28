@@ -19,7 +19,11 @@
     </div>
 
     <!-- Sidebar Menu -->
-      @include('layouts.admin_sidebar_menu')
+      @if(Auth::user()->role=="Administrator")
+        @include('layouts.admin_sidebar_menu')
+      @else
+        @include('layouts.student_sidebar_menu')
+      @endif
     <!-- /.sidebar-menu -->
   </div>
   <!-- /.sidebar -->

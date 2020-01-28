@@ -27,6 +27,28 @@ class Examination extends Model
 
     public function scopeUpdateQuestion($query, $e, $u_exam)
     {
-        $q->save();
+        // $q->save();
+    }
+
+    public function scopeGetUnAttemptedExaminationsForStudent($query, $std_id)
+    {
+        $result = $this->select('*')->whereNotIn('id',function ($query) use ($std_id) {
+            $query->select('exam_questions.examination_id')
+            ->from('exam_questions')
+            ->join('attempted_exam_questions','exam_questions.id', '=', 'attempted_exam_questions.exam_question_id')
+            ->where('attempted_exam_questions.student_id','=',$std_id);
+        })->whereRaw('examinations.total_questions = examinations.total_questions_added');
+        return $result->get();
+    }
+
+    public function scopeGetAttemptedExaminationsForStudent($query, $std_id)
+    {
+        $result = $this->select('*')->whereIn('id',function ($query) use ($std_id) {
+            $query->select('exam_questions.examination_id')
+            ->from('exam_questions')
+            ->join('attempted_exam_questions','exam_questions.id',  '=', 'attempted_exam_questions.exam_question_id')
+            ->where('attempted_exam_questions.student_id','=',$std_id);
+        });
+        return $result->get();
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use \App\Examination;
 
 class StudentsController extends Controller
 {
@@ -80,5 +82,119 @@ class StudentsController extends Controller
         return back()->with('student_delete_success', 'Student deleted successfuly!');
     }
 
+    public function dashboard()
+    {
+        $unattempted_examinations = \App\Examination::GetUnAttemptedExaminationsForStudent(Auth::user()->id);
+        $exam_count = count($unattempted_examinations);
+        return view('students.dashboard',[
+            'exam_count' => $exam_count,
+            'examination' => null,
+        ]);
+    }
 
+    public function viewUnAttmptedExaminations()
+    {
+        $unattempted_examinations = \App\Examination::GetUnAttemptedExaminationsForStudent(Auth::user()->id);
+        $exam_count = count($unattempted_examinations);
+        return view('students.view_unattempted_examinations',[
+            'unattempted_examinations' => $unattempted_examinations,
+            'exam_count' => $exam_count,
+        ]);
+    }
+
+    public function viewAttmptedExaminations()
+    {
+        $unattempted_examinations = \App\Examination::GetUnAttemptedExaminationsForStudent(Auth::user()->id);
+        $attempted_examinations = \App\Examination::GetAttemptedExaminationsForStudent(Auth::user()->id);
+        $exam_count = count($unattempted_examinations);
+        return view('students.view_attempted_examinations',[
+            'attempted_examinations' => $attempted_examinations,
+            'exam_count' => $exam_count,
+        ]);
+    }
+
+    public function viewUnattemptedExaminationToAttempt(int $exam_id)
+    {
+        $exam = \App\Examination::findOrFail($exam_id);
+        $unattempted_examinations = \App\Examination::GetUnAttemptedExaminationsForStudent(Auth::user()->id);
+        $flag = false;
+        foreach($unattempted_examinations as $examination){
+            if($examination->id == $exam->id){
+                $flag = true;
+                break;
+            }
+        }
+        if(!$flag){// exam already attempted
+            return redirect()->route('students.dashboard');
+        }
+        else{
+            $exam_count = count($unattempted_examinations);
+            return view('students.view_exam_to_attempt',[
+                'examination' => $exam,
+                'exam_count' => $exam_count,
+            ]);
+        }
+    }
+
+    public function doAttemptExam(Request $request, int $exam_id)
+    {
+        $exam = \App\Examination::findOrFail($request->examination_id);
+        $exam_questions = \App\ExamQuestion::GetExamQuestions($exam);
+        $unattempted_examinations = \App\Examination::GetUnAttemptedExaminationsForStudent(Auth::user()->id);
+        $flag = false;
+        foreach($unattempted_examinations as $examination){
+            if($examination->id == $exam->id){
+                $flag = true;
+                break;
+            }
+        }
+        if(!$flag){// exam already attempted
+            return redirect()->route('students.dashboard');
+        }else{
+            $exam_count = count($unattempted_examinations);
+            return view('students.attempt_exam',[
+                'examination' => $exam,
+                'exam_questions' => $exam_questions,
+                'exam_count' => $exam_count,
+            ]);
+        }
+        
+    }
+
+    public function saveAttemptedExam(Request $request, int $exam_id)
+    {
+        $exam = \App\Examination::findOrFail($exam_id);
+        $attemtations = $request->except('_token');
+        foreach($attemtations as $key => $value){
+            \App\AttemptedExamQuestion::saveAttemptedExamQuestion(Auth::user()->id, $key, $value);  
+        }
+        return redirect()->route('students.attempted_examination_result',['examination'=> $exam_id]);
+    }
+
+    public function showResult(int $exam_id)
+    {
+        $exam = \App\Examination::findOrFail($exam_id);
+        $unattempted_examinations = \App\Examination::GetUnAttemptedExaminationsForStudent(Auth::user()->id);
+        $flag = false;
+        foreach($unattempted_examinations as $examination){
+            if($examination->id == $exam->id){
+                $flag = true;
+                break;
+            }
+        }
+        if($flag){// exam not attempted
+            return redirect()->route('students.dashboard');
+        }
+        else{
+            $exam_count = count($unattempted_examinations);
+            $attempted_exam_questions = \App\AttemptedExamQuestion::GetAttemptedExamQuestions(Auth::user()->id, $exam_id);
+            $student = Auth::user();
+            return view('students.exam_result',[
+                'examination' => $exam,
+                'student' => $student,
+                'exam_count' => $exam_count,
+                'attempted_exam_questions' => $attempted_exam_questions,
+            ]);
+        }
+    }
 }

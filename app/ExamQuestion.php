@@ -24,6 +24,14 @@ class ExamQuestion extends Model
         return $result;
     }
 
+    public function scopeGetExamQuestions($query, $exam)// to attempt exam
+    {
+        $result =  $this->select('exam_questions.id AS exam_question_id', 'questions.*')
+        ->join('questions','questions.id','=','exam_questions.question_id')
+        ->where('exam_questions.examination_id','=',$exam->id);
+        return $result->get();
+    }
+
     
     public function scopeSaveExamQuestion($query, $exam, $question_id)
     {
