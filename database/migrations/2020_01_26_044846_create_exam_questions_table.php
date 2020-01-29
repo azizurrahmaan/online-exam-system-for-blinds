@@ -21,6 +21,7 @@ class CreateExamQuestionsTable extends Migration
             $table->foreign('question_id')->references('id')->on('questions');
             $table->timestamps();
         });
+        DB::statement("ALTER TABLE `exam_questions` ADD UNIQUE `exam_questions_unique`(`examination_id`, `question_id`);");
     }
 
     /**

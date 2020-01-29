@@ -25,7 +25,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="duration_for_non_blind">{{ __('Cick to Start the exam:') }}</label>
-                                <form action="{{route('students.do_attempt_examination',['examination'=>$examination['id']])}}" method="POST">@csrf
+                                <form id="start_exam_form" action="{{route('students.do_attempt_examination',['examination'=>$examination['id']])}}" method="POST">@csrf
                                     <input type="number" name="examination_id" hidden value="{{$examination['id']}}">
                                     <button type="submit" class="form-control btn btn-primary">Start Exam</button>
                                 </form>
@@ -41,4 +41,6 @@
 </div>
 @endsection
 @section('scripts')
+<script>
+</script>
 @endsection

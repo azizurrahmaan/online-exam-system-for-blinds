@@ -60,5 +60,8 @@ Route::group(['middleware' => ['verify_student']], function () {
     Route::get('/student_portal/unattempted_examinations/{examination}/attempt', 'StudentsController@viewUnattemptedExaminationToAttempt')->name('students.attempt_examination');
     Route::post('/student_portal/unattempted_examinations/{examination}/do_attempt', 'StudentsController@doAttemptExam')->name('students.do_attempt_examination');
     Route::post('/student_portal/unattempted_examinations/{examination}/save_attempted_exam', 'StudentsController@saveAttemptedExam')->name('students.save_attempted_exam');
+    
     Route::get('/student_portal/attempted_examinations/{examination}/result', 'StudentsController@showResult')->name('students.attempted_examination_result');
+
+    Route::post('/api/getRemainigMinutes','APIController@getMinutesRemaining')->name('examinations.time_left');
 });

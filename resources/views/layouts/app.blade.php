@@ -39,6 +39,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <div class="col-sm-6">
             <h1 class="m-0 text-dark">@yield("title")</h1>
           </div><!-- /.col -->
+          <div class="col-sm-6" style="float:right;">
+            @yield("title_front")
+          </div>
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>

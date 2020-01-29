@@ -101,7 +101,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">
-                            <label>{{++$i}}.  {{$question['subject']}} </label>
+                            <label>{{++$i}}.  {{$question['subject']}} </label> @if($question['choosed_option'] == 'NILL') <span class="right badge badge-danger"><i class="fas fa-times"></i>&nbsp; Un-Attempted</span> @endif
                         </div>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>

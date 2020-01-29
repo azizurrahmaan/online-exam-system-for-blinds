@@ -165,10 +165,16 @@ class StudentsController extends Controller
             return redirect()->route('students.dashboard');
         }else{
             $exam_count = count($unattempted_examinations);
+            $exam_attempt_time = (Auth::user()->role == 'Non-Blind Student')?$exam->duration_for_non_blind:(Auth::user()->role == 'Blind Student')?$exam->duration_for_blind:0;
+            $exam_status = \App\ExaminationAttempt::GetExamStatus(Auth::user()->id, $request->examination_id);
+            if(count($exam_status) == 0){
+                \App\ExaminationAttempt::StoreExamimnationAttepmt(Auth::user()->id, $exam->id, date("Y-m-d H:i:s", strtotime('now')), date("Y-m-d H:i:s", strtotime('+' . $exam_attempt_time . ' minutes')));
+            }
             return view('students.attempt_exam',[
                 'examination' => $exam,
                 'exam_questions' => $exam_questions,
                 'exam_count' => $exam_count,
+                'exam_attempt_time' => $exam_attempt_time,
             ]);
         }
         
@@ -178,6 +184,12 @@ class StudentsController extends Controller
     {
         $exam = \App\Examination::findOrFail($exam_id);
         $attemtations = $request->except('_token');
+        $exam_questions = \App\ExamQuestion::GetExamQuestions($exam);
+        foreach ($exam_questions as $key => $value) {
+            if(!array_key_exists($value['exam_question_id'], $attemtations)){
+                $attemtations[$value['exam_question_id']] = 'NILL';
+            }
+        }
         foreach($attemtations as $key => $value){
             \App\AttemptedExamQuestion::saveAttemptedExamQuestion(Auth::user()->id, $key, $value);  
         }
