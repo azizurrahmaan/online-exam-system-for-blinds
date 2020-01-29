@@ -34,7 +34,7 @@
                                 <td>{{$examination['name']}}</td>
                                 <td>{{$examination['total_questions']}}</td>
                                 <td>{{$examination['passing_percentage']}}</td>
-                                <td>@if(Auth::user()->role == 'Blind Student'){{$examination['duration_for_blind']}} @else if(Auth::user()->role == 'Non-Blind Student'){{$examination['duration_for_non_blind']}}@endif</td>
+                                <td>@if(Auth::user()->role == 'Blind Student'){{$examination['duration_for_blind']}} @elseif(Auth::user()->role == 'Non-Blind Student'){{$examination['duration_for_non_blind']}}@endif</td>
                                 <td>
                                     <a href="{{ route('students.attempted_examination_result',['examination'=> $examination->id]) }}" class="right badge badge-success"> <i class="fas fa-eye"></i> View Result</a>
                                 </td>

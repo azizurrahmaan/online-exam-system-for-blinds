@@ -128,6 +128,7 @@ Register {{(url()->current() == route("students"))?'Students':'Administrators'}}
                                                 @csrf
                                                 <input type="submit" class="right badge badge-danger" value="Delete"/>
                                              </form>
+                                             <a class="right badge badge-success" href="{{ route('students.show_attepted_exams_to_admin',['user'=>$student['id']]) }}"><i class="fas fa-eye"></i> View Results</a>
                                         </td>
                                     </tr>
                                     @endforeach

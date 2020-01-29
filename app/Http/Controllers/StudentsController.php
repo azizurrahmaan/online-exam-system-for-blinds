@@ -113,6 +113,19 @@ class StudentsController extends Controller
         ]);
     }
 
+    public function viewAttmptedExaminationsToAdmin(int $std_id)
+    {   
+        $std = \App\User::findOrFail($std_id);
+        $unattempted_examinations = \App\Examination::GetUnAttemptedExaminationsForStudent($std_id);
+        $attempted_examinations = \App\Examination::GetAttemptedExaminationsForStudent($std_id);
+        $exam_count = count($unattempted_examinations);
+        return view('students.view_attempted_examinations_to_admin',[
+            'attempted_examinations' => $attempted_examinations,
+            'exam_count' => $exam_count,
+            'student' => $std,
+        ]);
+    }
+
     public function viewUnattemptedExaminationToAttempt(int $exam_id)
     {
         $exam = \App\Examination::findOrFail($exam_id);
@@ -189,6 +202,33 @@ class StudentsController extends Controller
             $exam_count = count($unattempted_examinations);
             $attempted_exam_questions = \App\AttemptedExamQuestion::GetAttemptedExamQuestions(Auth::user()->id, $exam_id);
             $student = Auth::user();
+            return view('students.exam_result',[
+                'examination' => $exam,
+                'student' => $student,
+                'exam_count' => $exam_count,
+                'attempted_exam_questions' => $attempted_exam_questions,
+            ]);
+        }
+    }
+
+    public function showResultToAdmin(int $exam_id, int $std_id)
+    {
+        $student = \App\User::findOrFail($std_id);
+        $exam = \App\Examination::findOrFail($exam_id);
+        $unattempted_examinations = \App\Examination::GetUnAttemptedExaminationsForStudent($student->id);
+        $flag = false;
+        foreach($unattempted_examinations as $examination){
+            if($examination->id == $exam->id){
+                $flag = true;
+                break;
+            }
+        }
+        if($flag){// exam not attempted
+            return redirect()->route('students.dashboard');
+        }
+        else{
+            $exam_count = count($unattempted_examinations);
+            $attempted_exam_questions = \App\AttemptedExamQuestion::GetAttemptedExamQuestions($student->id, $exam_id);
             return view('students.exam_result',[
                 'examination' => $exam,
                 'student' => $student,

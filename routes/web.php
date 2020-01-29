@@ -20,6 +20,10 @@ Route::group(['middleware' => ['verify_admin']], function () {
     Route::get('students/{user}', 'StudentsController@edit')->name('students.edit');
     Route::patch('students/{user}/update', 'StudentsController@update')->name('students.update');
     Route::delete('students/{user}', 'StudentsController@destroy')->name('students.delete');
+    Route::get('students/{user}/view_attempted_exams', 'StudentsController@viewAttmptedExaminationsToAdmin')->name('students.show_attepted_exams_to_admin');
+    Route::get('/students/attempted_examinations/{examination}/result/{student}', 'StudentsController@showResultToAdmin')->name('students.attempted_examination_result_to_admin');
+   
+
     Route::get('/administrators', 'Auth\RegisterController@showRegistrationForm')->name('administrators');
 
     Route::resource('/questions', 'QuestionsController',[

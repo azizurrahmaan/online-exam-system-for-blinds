@@ -43,7 +43,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="duration_for_non_blind">{{ __('Duration in Minutes:') }}</label>
-                                <input disabled id="duration_for_non_blind" type="number" title="Duration for Non-Blind Students in Minutes(20, 25 or 30 etc)" class="form-control" name="duration_for_non_blind" value="@if(Auth::user()->role == 'Blind Student'){{$examination['duration_for_blind']}}@elseif(Auth::user()->role == 'Non-Blind Student') {{$examination['duration_for_non_blind']}}@endif" required autocomplete="duration_for_non_blind">
+                                <input disabled id="duration_for_non_blind" type="number" title="Duration for Non-Blind Students in Minutes(20, 25 or 30 etc)" class="form-control" name="duration_for_non_blind" value="@if($student->role == 'Blind Student'){{$examination['duration_for_blind']}}@elseif($student->role == 'Non-Blind Student') {{$examination['duration_for_non_blind']}}@endif" required autocomplete="duration_for_non_blind">
                             </div>
                         </div>
                         <div class="col-md-4">
