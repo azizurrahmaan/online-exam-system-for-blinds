@@ -41,6 +41,46 @@
 </div>
 @endsection
 @section('scripts')
+<script src="{{ asset('js/textToSpeech.js')}}"></script>
 <script>
+    $(function(){
+        @if( Auth::user()->role == "Blind Student" )
+                
+        speakMenu()
+
+        setInterval(() => {
+            textToSpeech("Press m to view menu")
+        }, 10000);
+        var t_pressed_no_of_times = 0;
+        var exam_result_url = undefined;
+        $('body').keydown(function(event) { 
+            var x = event.which || event.keyCode;
+            if(x == 67){//c
+                window.speechSynthesis.cancel()
+                $("#start_exam_form").submit()
+            }else if(x == 72){//h
+                
+                window.speechSynthesis.cancel()
+                window.location="{{route('students.dashboard')}}";
+            }else if(x == 76){//l
+                
+                window.speechSynthesis.cancel()
+                $("#logout-form").submit()
+            }else if(x == 77){//m
+                
+                window.speechSynthesis.cancel()
+                speakMenu()
+            }
+        });
+        @endif
+
+        })
+        function speakMenu(){
+        textToSpeech("You are going to attempt {{$examination['name']}} Exam")
+        textToSpeech("Duration for this exam is {{$examination['duration_for_blind']}} minutes")
+        textToSpeech("press key c to confirm to attempt this exam")
+        textToSpeech("press key h to go back to home page")
+        textToSpeech("press key l to logout of application")
+        }
 </script>
 @endsection

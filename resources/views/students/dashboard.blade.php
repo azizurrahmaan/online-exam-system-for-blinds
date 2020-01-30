@@ -21,3 +21,43 @@
     </div>
 </div>
 @endsection
+@section('scripts')
+<script src="{{ asset('js/textToSpeech.js')}}"></script>
+<script>
+    $(function(){
+        @if( Auth::user()->role == "Blind Student" )
+            textToSpeech("Welcome to Online Multiple Choice test for blind and non blind students")
+            textToSpeech("You are on home page")
+            textToSpeech("You can do one of the following")
+            textToSpeech("press key a to See un-attempted exams")
+            textToSpeech("press key b to see attempted exams")
+            textToSpeech("press key l to logout of application")
+            textToSpeech("the menu will be repeated after 30 seconds")
+
+            setInterval(() => {
+                textToSpeech("Welcome to Online Multiple Choice test for blind and non blind students")
+                textToSpeech("You are on home page")
+                textToSpeech("You can do one of the following")
+                textToSpeech("press key a to See un-attempted exams")
+                textToSpeech("press key b to see attempted exams")
+                textToSpeech("press key l to logout of application")
+                textToSpeech("the menu will be repeated after 30 seconds")
+            }, 30000);
+
+            $('body').keydown(function(event) { 
+                var x = event.which || event.keyCode;
+                if(x == 65){
+                    window.speechSynthesis.cancel()
+                    window.location="{{route('students.unattempted_examinations')}}";
+                }else if(x == 66){
+                    window.speechSynthesis.cancel()
+                    window.location="{{route('students.attempted_examinations')}}";
+                }else if(x == 76){
+                    window.speechSynthesis.cancel()
+                    $("#logout-form").submit()
+                }
+            });
+       @endif
+    })
+</script>
+@endsection

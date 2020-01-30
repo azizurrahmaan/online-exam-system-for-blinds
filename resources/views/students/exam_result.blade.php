@@ -1,8 +1,6 @@
 @extends('layouts.app')
 @section('title','Exam Result: ' . $examination['name'] )
 @section('styles')
-  <!-- DataTables -->
-  <link rel="stylesheet" href="{{ asset("/admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.css")}}">
   <style>
       .to-be-selected{
           background: #218838;
@@ -156,105 +154,41 @@
 </div>
 @endsection
 @section('scripts')
-<!-- DataTables -->
-<script src="{{ asset("/admin-lte/plugins/datatables/jquery.dataTables.js")}}"></script>
-<script src="{{ asset("/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.js")}}"></script>
+<script src="{{ asset('js/textToSpeech.js')}}"></script>
 <script>
     $(function () {
-      $('#questions_table').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": true,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-      });
-      $("#save_selected_question_in_exam_form").on('submit', function(){
-          let count = 0;
-        $("input[name='question_to_be_added[]']").each(function(index, elem){
-            if($(this).is(':checked')){
-                count++;
-            }
-        })
-        if(count == 0){
-            alert('No Question Selected from Pool!');
-            return false;
-        }else if((Number(count)+Number($("#total_questions_added").val())) > $("#total_questions").val()){
-            console.log(Number(count)+$("#total_questions_added").val());
-            alert('No More than ' + (Number($("#total_questions").val()) - $("#total_questions_added").val()) + ' questions for this exam can be selected!');
-            return false;
-        }else{
-            return true;
-        }
-      })
-      $('.optional-option-enabler').on('change', function(){
-          let text_input = $(this).parent().parent().parent().find('input[type="text"]');
-          let radio_input = $(this).parent().parent().parent().find('input[type="radio"]');
-        if($(this).is(':checked')){
-            text_input.removeAttr('disabled');
-            text_input.attr('required','true');
-            radio_input.removeAttr('disabled');
-            radio_input.attr('required','true');
-        }else{
-            radio_input.attr('disabled','disabled');
-            radio_input.removeAttr('required');
-            text_input.attr('disabled','disabled');
-            text_input.removeAttr('required');
-        }
-      })
-      $("#enable-option-d").on('click', function(){
-          if($(this).is(':checked') && !$("#enable-option-c").is(':checked')){
-            $("#enable-option-c").click()
-          }
-      })
-      $("#enable-option-e").on('click', function(){
-          if($(this).is(':checked') && !$("#enable-option-c").is(':checked')){
-            $("#enable-option-c").click()
-          }
-          if($(this).is(':checked') && !$("#enable-option-d").is(':checked')){
-            $("#enable-option-d").click()
-          }
-      })
-      $("#enable-option-c").on('click', function(){
-          if(!$(this).is(':checked') && $("#enable-option-d").is(':checked')){
-            $("#enable-option-d").click()
-          }
-          if(!$(this).is(':checked') && $("#enable-option-e").is(':checked')){
-            $("#enable-option-e").click()
-          }
-      })
-      $("#enable-option-d").on('click', function(){
-          if(!$(this).is(':checked') && $("#enable-option-e").is(':checked')){
-            $("#enable-option-e").click()
-          }
-      })
-      $("[data-target='#modal-danger']").on('click', function(){
-          let title = $(this).data('title');
-          let question_text = $(this).data('question-text');
-          let id = $(this).data('id');
-        $("#title-span").text(title);
-        $("#question-text-span").text(question_text);
-        $("#confirm-delete-button").attr('data-form-id',id);
-      })
-      $("#confirm-delete-button").on('click', function(){
-        $('#form-'+$(this).data('form-id')).submit();
-      })
+        @if( Auth::user()->role == "Blind Student" )
+                    
+            speakMenu()
 
-      $('.add-in-exam-btn').on('click', function(){
-          if(!$(this).parent().find('input[type="checkbox"]').is(':checked')){
-            $(this).parent().find('input[type="checkbox"]').attr('checked','checked')
-            $(this).parent().parent().addClass('to-be-selected');
-            $(this).removeClass('btn-success');
-            $(this).text('Selected');
-            $(this).addClass('btn-default');
-          }else{
-            $(this).parent().parent().removeClass('to-be-selected');
-            $(this).removeClass('btn-default');
-            $(this).addClass('btn-success');
-            $(this).text('Select for Exam');
-            $(this).parent().find('input[type="checkbox"]').removeAttr('checked')
-          }
-      })
+            setInterval(() => {
+                textToSpeech("Press m to view menu")
+            }, 10000);
+
+            $('body').keydown(function(event) { 
+
+                var x = event.which || event.keyCode;
+                if(x == 72){//h
+                    window.location="{{route('students.dashboard')}}";
+                }else if(x == 76){//l
+                    $("#logout-form").submit()
+                }else if(x == 77){//m
+                    speakMenu()
+                }
+
+            });
+            @endif
     })
+    function speakMenu(){
+        textToSpeech("You are viewing Exam {{ $examination['name'] }} result")
+        textToSpeech("Duration for this exam was {{$examination['duration_for_blind']}} minutes")
+        textToSpeech("Max Scores were {{$examination['total_questions']}}")
+        textToSpeech("Your Scores were {{$score}}")
+        textToSpeech("Your percentage was {{round($percentage,2)}}")
+        textToSpeech("Your status in this exam is {{$status}}")
+
+        textToSpeech("press key h to go back to home")
+        textToSpeech("press key l to logout of application")
+    }
 </script>
 @endsection

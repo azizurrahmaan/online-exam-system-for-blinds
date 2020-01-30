@@ -17,7 +17,7 @@ class APIController extends Controller
         if($time_elapsed >= $exam_duration){
             return ['time_elapsed'=>'timeup'];
         }else{
-            return ['time_elapsed'=>$remaining_time] ;
+            return ['time_elapsed'=>$remaining_time, 'time_elapsed_' =>  intval($remaining_time/60), 'exam_duration' => $exam_duration] ;
         }
     }
 }

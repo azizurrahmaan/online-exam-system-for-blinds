@@ -33,7 +33,7 @@
 @section('title_front')
 <label style="float:right; font-size:25px; font-weight:400;">
     Total Time: {{$exam_attempt_time}} minute(s) | 
-    Time Elapsed: <span  style="font-weight:600;" id="time-elapsed">00:00</span>
+    Time Left: <span  style="font-weight:600;" id="time-elapsed">00:00</span>
 </label>
 @endsection
 @section('content')
@@ -105,11 +105,22 @@
 <!-- DataTables -->
 <script src="{{ asset("/admin-lte/plugins/datatables/jquery.dataTables.js")}}"></script>
 <script src="{{ asset("/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.js")}}"></script>
+<script src="{{asset('js/textToSpeech.js')}}"></script>
 <script>
+    var total_minutes_remaining;
+    var total_seconds_remaining;
+    
+    let questions = $(".card");
+    let no_of_questions = questions.length;
+    let question_index = 0;
+
     $(function () {
-        $('body').keydown(function(event) { 
-            return false;
-        });
+       @if( Auth::user()->role != "Blind Student" )
+            $('body').keydown(function(event) { 
+                return false;
+            });
+        @endif
+
         $('.option-row').on('click', function(){
             $(this).parent().parent().parent().find('input[type="radio"]').each(function (index, elem) { 
                 if($(this).is(':checked')){
@@ -117,7 +128,7 @@
                 }else{
                     $(this).parent().removeClass('to-be-selected');
                 }
-             })
+            })
             
         });
         updateRemainingTime()
@@ -133,7 +144,6 @@
                     std_id: '{{Auth::user()->id}}'
                 },
                 success: function(data){
-                    console.log(data['time_elapsed'])
                     if(data['time_elapsed'] == 'timeup'){
                         $("#time-elapsed").text("Time\'s Up");
                         clearInterval(countdown);
@@ -142,8 +152,8 @@
                     }
                     let time_elapsed_mins = "";
                     let time_elapsed_secs = "";
-                    if(data['time_elapsed'] > 60){
-                        time_elapsed_mins = Math.round(data['time_elapsed']/60) + "";
+                    if(data['time_elapsed'] >= 60){
+                        time_elapsed_mins = Math.floor(data['time_elapsed']/60) + "";
                         time_elapsed_secs = data['time_elapsed']%60 + "";
                     }else{
                         time_elapsed_secs = data['time_elapsed'];
@@ -157,12 +167,145 @@
                     if(time_elapsed_secs.length < 2){
                         time_elapsed_secs = '0' + time_elapsed_secs;
                     }
-                    $("#time-elapsed").text(time_elapsed_mins + ':' + time_elapsed_secs)
+                    total_minutes_remaining = (Number({{$exam_attempt_time}}) - Number(time_elapsed_mins))  - Number(1);
+                    total_seconds_remaining = (Number(60) - Number(time_elapsed_secs)) ;
+                    total_minutes_remaining += "";
+                    total_seconds_remaining += "";
+                    
+                    if(total_minutes_remaining == ''){
+                        total_minutes_remaining='00';
+                    }
+                    else if(total_minutes_remaining.length < 2){
+                        total_minutes_remaining = '0' + total_minutes_remaining;
+                    }
+                    if(total_seconds_remaining.length < 2){
+                        total_seconds_remaining = '0' + total_seconds_remaining;
+                    }
+
+                    $("#time-elapsed").text(total_minutes_remaining + ':' + total_seconds_remaining)
                 },
             });
         }
 
-        
+        @if( Auth::user()->role == "Blind Student" )
+                
+            speakMenu()
+
+            setInterval(() => {
+                textToSpeech("Press m to view menu")
+            }, 10000);
+            var t_pressed_no_of_times = 0;
+            var exam_result_url = undefined;
+
+            $('body').keydown(function(event) { 
+                var x = event.which || event.keyCode;
+                // alert(x)
+                if(x == 77){//m
+                    window.speechSynthesis.cancel()
+                    speakMenu()
+                }else if(x ==76){//l
+                    window.speechSynthesis.cancel()
+                    textToSpeech(Number(total_minutes_remaining) + " minutes and " + Number(total_seconds_remaining) + " seconds are left")
+                }else if(x ==83){//s
+                    window.speechSynthesis.cancel()
+                    textToSpeech("Submitting exam")
+                    setTimeout(() => {
+                        $("#exam-form").submit()
+                    }, 2000);
+                }else if(x ==82){//r
+                    window.speechSynthesis.cancel()
+                    if($(questions[question_index-1]).find('.card-body').text() == "" || 
+                        $(questions[question_index-1]).find('.card-body').text() == null || 
+                        $(questions[question_index-1]).find('.card-body').text() == undefined){
+                        textToSpeech("you have not selected any question to read")
+                    }else{
+                        textToSpeech($(questions[question_index-1]).find('.card-body').text())
+                        textToSpeech("Press o to traverse options")
+                    }
+                }else if(x ==79){//o
+                    window.speechSynthesis.cancel()
+                    if($(questions[question_index-1]).find('.card-body').text() == "" || 
+                        $(questions[question_index-1]).find('.card-body').text() == null || 
+                        $(questions[question_index-1]).find('.card-body').text() == undefined){
+                        textToSpeech("you have not selected any question to read its options")
+                    }else{
+                        textToSpeech($(questions[question_index-1]).find('.card-footer').text())
+                        textToSpeech("Press o to read options again")
+                        textToSpeech("Press alphabet of option to choose it")
+                    }
+                }else if(x ==65){//a
+                    window.speechSynthesis.cancel()
+                    if($(questions[question_index-1]).find('.card-footer').children()[0] == undefined){
+                        textToSpeech("the question you are standing on has no option a")
+                    }else{
+                        textToSpeech("choosed option 'A' as answer to question " + (Number(question_index)))
+                        let option = $($($(questions[question_index-1]).find('.card-footer').children()[0]).find('.option-row'))
+                        option.click()
+                        option.click()
+                    }
+                }else if(x ==66){//b
+                    window.speechSynthesis.cancel()
+                    if($(questions[question_index-1]).find('.card-footer').children()[1] == undefined){
+                        textToSpeech("the question you are standing on has no option b")
+                    }else{
+                        textToSpeech("choosed option 'B' as answer to question " + (Number(question_index)))
+                        let option = $($($(questions[question_index-1]).find('.card-footer').children()[1]).find('.option-row'))
+                        option.click()
+                        option.click()
+                    }
+                }else if(x ==67){//c
+                    window.speechSynthesis.cancel()
+                    if($(questions[question_index-1]).find('.card-footer').children()[2] == undefined){
+                        textToSpeech("the question you are standing on has no option c")
+                    }else{
+                        textToSpeech("choosed option 'c' as answer to question " + (Number(question_index)))
+                        let option = $($($(questions[question_index-1]).find('.card-footer').children()[2]).find('.option-row'))
+                        option.click()
+                        option.click()
+                    }
+                }else if(x ==68){//d
+                    window.speechSynthesis.cancel()
+                    if($(questions[question_index-1]).find('.card-footer').children()[3] == undefined){
+                        textToSpeech("the question you are standing on has no option d")
+                    }else{
+                        textToSpeech("choosed option 'd' as answer to question " + (Number(question_index)))
+                        let option = $($($(questions[question_index-1]).find('.card-footer').children()[3]).find('.option-row'))
+                        option.click()
+                        option.click()
+                    }
+                }else if(x ==69){//e
+                    window.speechSynthesis.cancel()
+                    if($(questions[question_index-1]).find('.card-footer').children()[4] == undefined){
+                        textToSpeech("the question you are standing on has no option e")
+                    }else{
+                        textToSpeech("choosed option 'e' as answer to question " + (Number(question_index)))
+                        let option = $($($(questions[question_index-1]).find('.card-footer').children()[4]).find('.option-row'))
+                        option.click()
+                        option.click()
+                    }
+                }else if(x ==84){//t
+                    window.speechSynthesis.cancel()
+                    if(question_index == no_of_questions){
+                        question_index = 0;
+                    }
+                    textToSpeech("your are standing on question " + $(questions[question_index]).find('.card-title').find('label').text())
+                    textToSpeech("press r to read the question")
+                    console.log(questions[question_index])
+
+                    question_index++;
+                }
+            });
+        @endif
+
     })
+
+    function speakMenu(){
+        textToSpeech("You are attempting {{$examination['name']}} Exam")
+        textToSpeech("Duration for this exam is {{$examination['duration_for_blind']}} minutes")
+        textToSpeech("Exam has " + no_of_questions + " questions")
+        textToSpeech("Press l for time left")
+        textToSpeech("Press t to traverse questions")
+        textToSpeech("Press s to submit your exam")
+    }
 </script>
 @endsection
