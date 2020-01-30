@@ -151,31 +151,45 @@ class StudentsController extends Controller
 
     public function doAttemptExam(Request $request, int $exam_id)
     {
-        $exam = \App\Examination::findOrFail($request->examination_id);
-        $exam_questions = \App\ExamQuestion::GetExamQuestions($exam);
-        $unattempted_examinations = \App\Examination::GetUnAttemptedExaminationsForStudent(Auth::user()->id);
-        $flag = false;
-        foreach($unattempted_examinations as $examination){
-            if($examination->id == $exam->id){
-                $flag = true;
-                break;
-            }
-        }
-        if(!$flag){// exam already attempted
+        
+        $already_attempted  = count(\App\AttemptedExamQuestion::GetAttemptedExamQuestions(Auth::user()->id, $exam_id));
+
+        if($already_attempted > 0){
             return redirect()->route('students.dashboard');
         }else{
-            $exam_count = count($unattempted_examinations);
-            $exam_attempt_time = (Auth::user()->role == 'Non-Blind Student')?$exam->duration_for_non_blind:(Auth::user()->role == 'Blind Student')?$exam->duration_for_blind:0;
-            $exam_status = \App\ExaminationAttempt::GetExamStatus(Auth::user()->id, $request->examination_id);
-            if(count($exam_status) == 0){
-                \App\ExaminationAttempt::StoreExamimnationAttepmt(Auth::user()->id, $exam->id, date("Y-m-d H:i:s", strtotime('now')), date("Y-m-d H:i:s", strtotime('+' . $exam_attempt_time . ' minutes')));
+            $exam = \App\Examination::findOrFail($request->examination_id);
+            $exam_questions = \App\ExamQuestion::GetExamQuestions($exam);
+            $unattempted_examinations = \App\Examination::GetUnAttemptedExaminationsForStudent(Auth::user()->id);
+            $flag = false;
+            foreach($unattempted_examinations as $examination){
+                if($examination->id == $exam->id){
+                    $flag = true;
+                    break;
+                }
             }
-            return view('students.attempt_exam',[
-                'examination' => $exam,
-                'exam_questions' => $exam_questions,
-                'exam_count' => $exam_count,
-                'exam_attempt_time' => $exam_attempt_time,
-            ]);
+            if(!$flag){// exam already attempted
+                return redirect()->route('students.dashboard');
+            }else{
+                $exam_count = count($unattempted_examinations);
+                $exam_attempt_time = 0;
+                if(Auth::user()->role == 'Non-Blind Student'){
+                    $exam_attempt_time = $exam->duration_for_non_blind;
+                }
+                else if(Auth::user()->role == 'Blind Student'){
+                    $exam_attempt_time = $exam->duration_for_blind;
+                }
+                $exam_status = \App\ExaminationAttempt::GetExamStatus(Auth::user()->id, $request->examination_id);
+                if(count($exam_status) == 0){
+                    \App\ExaminationAttempt::StoreExamimnationAttepmt(Auth::user()->id, $exam->id, date("Y-m-d H:i:s", strtotime('now')), date("Y-m-d H:i:s", strtotime('+' . $exam_attempt_time . ' minutes')));
+                }
+                return view('students.attempt_exam',[
+                    'examination' => $exam,
+                    'exam_questions' => $exam_questions,
+                    'exam_count' => $exam_count,
+                    'exam_attempt_time' => $exam_attempt_time,
+                ]);
+            }
+
         }
         
     }
@@ -190,8 +204,11 @@ class StudentsController extends Controller
                 $attemtations[$value['exam_question_id']] = 'NILL';
             }
         }
-        foreach($attemtations as $key => $value){
-            \App\AttemptedExamQuestion::saveAttemptedExamQuestion(Auth::user()->id, $key, $value);  
+        $already_attempted  = count(\App\AttemptedExamQuestion::GetAttemptedExamQuestions(Auth::user()->id, $exam_id));
+        if($already_attempted <= 0){
+            foreach($attemtations as $key => $value){
+                \App\AttemptedExamQuestion::saveAttemptedExamQuestion(Auth::user()->id, $key, $value);  
+            }
         }
         return redirect()->route('students.attempted_examination_result',['examination'=> $exam_id]);
     }

@@ -115,6 +115,7 @@
     let question_index = 0;
 
     $(function () {
+        
        @if( Auth::user()->role != "Blind Student" )
             $('body').keydown(function(event) { 
                 return false;
@@ -296,7 +297,6 @@
                 }
             });
         @endif
-
     })
 
     function speakMenu(){
