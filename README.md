@@ -1,3 +1,5 @@
+Following is the procedure to setup the system. Please follow step by step and don't miss even a single step.
+
 1) Follow the video in the link to setup for laravel.
    https://laracasts.com/series/laravel-from-scratch-2018/episodes/2
 2) Run the following command from the terminal/cmd standing in the root directory of the Projet:
