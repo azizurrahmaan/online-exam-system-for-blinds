@@ -5,7 +5,7 @@ Following is the procedure to setup the system. Please follow step by step and d
 1) Follow the video in the link to setup for laravel.
    https://laracasts.com/series/laravel-from-scratch-2018/episodes/2
 2) Run the following command from the terminal/cmd standing in the root directory of the Projet:
-   >> composer install
+   >> ``` composer install ```
 3) Launch the xampp or wamp and run the mysql services. (install xampp or wamp if not already installed)
 4) Open 'localhost/phpmyadmin' in the browser.
 5) Create a database named online_exam_blind_non_blind (it is assumed that the user is 'root' with no password in phpmyadmin)
