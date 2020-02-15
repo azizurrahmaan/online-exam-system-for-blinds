@@ -32,3 +32,8 @@ Following is the procedure to setup the system. Please follow step by step and d
 
 Explore the system now!! :)
 
+###Screenshots
+
+![Question pool](public/images/questionpool.jpg "Question pool")
+
+![Add Questions in Exam](public/images/addquestioninexam.jpg "Add Questions in Exam")
