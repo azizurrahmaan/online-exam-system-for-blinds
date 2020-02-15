@@ -21,9 +21,9 @@ Following is the procedure to setup the system. Please follow step by step and d
 11) Run the following command from terminal:
 
    	```php artisan serv```
-12) Enter the following url in the browser:
-   [http://http://127.0.0.1:8000/](localhost:8000)
-   You should see a login form by hitting the url.
+12) Enter the url in the browser:
+   	[localhost:8000](http://127.0.0.1:8000/).
+   	You should see a login form.
 13) Login as an admin with the following credentials 
 
   	**email:** ```admin@gmail.com```
@@ -32,7 +32,7 @@ Following is the procedure to setup the system. Please follow step by step and d
 
 Explore the system now!! :)
 
-###Screenshots
+### Screenshots
 
 ![Question pool](public/images/questionpool.jpg "Question pool")
 
