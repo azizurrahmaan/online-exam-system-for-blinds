@@ -1,6 +1,7 @@
 # Online Exam System for visually blind
 
-#Installation
+# Installation
+
 Following is the procedure to setup the system. Please follow step by step and don't miss even a single step.
 
 1) Watch [the video](https://laracasts.com/series/laravel-from-scratch-2018/episodes/2) to setup laravel on your computer.
